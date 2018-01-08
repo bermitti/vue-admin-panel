@@ -1,4 +1,4 @@
-# vue-admin
+# portfolio-admin-vue
 
 > A Vue.js project
 

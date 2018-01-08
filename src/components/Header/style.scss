@@ -1,18 +1,21 @@
 header {
-    // background-color: $accent; почему не видит?
-    display: flex;
-    align-items: center;
-    color: #fff;
-    padding: 30px 35px;
+  padding: 20px 30px;
+  display: flex;
+  background: $green;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.title {
-    font-size: 28px;
-    margin-right: auto;
+.title-text {
+  color: #fff;
+  font-size: 28px;
 }
 
-.logout {
-    font-size: 16px;
+.return-back {
+  font-size: 16px;
+  color: #fff;
+
+  &:hover {
     text-decoration: none;
-    border-bottom: 1px dashed #fff;
+  }
 }

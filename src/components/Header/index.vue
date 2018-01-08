@@ -1,11 +1,13 @@
 <template lang="pug">
-header
-    .title Панель администрирования
-    a(href='').logout Вернуться на сайт
+  header
+    h1.title-text Панель администрирования
+    a(href="").return-back Вернуться на сайт
 </template>
+
 <script>
 export default {
-    
+
 }
 </script>
-<style lang="scss" src='./style.scss' scoped></style>
+
+<style src="./style.scss" lang="scss" scoped></style>

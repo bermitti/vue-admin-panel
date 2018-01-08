@@ -1,48 +1,45 @@
 <template lang="pug">
-.about
-    h2 Страница "Обо мне"
-    skills-list(
-        v-for="(skill, index) in skillsList",
-        :skills='getSkills',
-        :key="index",
-        :skillType="skill",
+  .about
+    h2.title Страница "Обо мне"
+    .skills-list
+      SkillsList(
+        v-for="(skillType, index) in skillsTypes"
+        :skillGroup="skillType"
+        :key="index"
+        :skills="skills"
         @addSkill="addSkill"
-    )
-    .icon
-        
+        @removeSkill="removeSkill"
+      )
 </template>
+
 <script>
+
 import { mapActions, mapGetters, mapMutations } from 'vuex'
-import { $eventBus } from '../../main'
+
 export default {
-    data: function () {
-        return {
-            skillsList: [
-                "Frontend",
-                "Backend",
-                "Workflow"
-            ]
-        }
+  data: () => ({
+    skillsTypes: ['Frontend', 'Workflow', 'Backend']
+  }),
+  methods: {
+    ...mapActions('skills', ['fetchSkills']),
+    ...mapMutations('skills', ['addNewSkill', 'removeSavedSkill']),
+    addSkill(skill) {
+      this.addNewSkill(skill)
     },
-    computed: {
-        ...mapGetters(['getSkills'])
-    },
-    methods: {
-        ...mapActions(['fetchSkills']),
-        ...mapMutations(['addNewSkill', 'removeSavedSkill']),
-        addSkill(skill) {
-            this.addNewSkill(skill);
-        }
-    },
-    created() {
-        this.fetchSkills();
-        $eventBus.$on('removeSkill', id => {
-            this.removeSavedSkill(id);
-        })
-    },
-    components: {
-        skillsList: require('./Skills-list')
+    removeSkill(skillId) {
+      this.removeSavedSkill(skillId)
     }
+  },
+  computed: {
+    ...mapGetters('skills', ['skills'])
+  },
+  mounted() {
+    this.fetchSkills()
+  },
+  components: {
+    SkillsList: require('./skills-list')
+  }
 }
 </script>
-<style lang='scss' src='./style.scss' scoped></style>
+
+<style src="./style.scss" lang="scss" scoped></style>

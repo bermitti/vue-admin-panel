@@ -1,83 +1,80 @@
 <template lang="pug">
-.skills-list
-    .skills-title {{skillType}}
-    table.skills-table
-        skill-item(
-            v-for="(skill, index) in skills",
-            v-if="checkSkillType(skillType)==skill.type"
-            :key="index",
-            :skill="skill"
+  .skills-item
+    .skills-title {{skillGroup}}
+    Skill(
+      v-for="skill in skills"
+      v-if="checkSkillType(skillGroup) === skill.type"
+      :id="skill.id"
+      :key="skill.id"
+      :title="skill.name",
+      :percents="skill.percents"
+      @removeSkill="removeSkill(skill.id)"
+    )
+    .add-skill
+      .add-skill-row
+        app-input(
+          type="text"
+          placeholder="Название"
+          v-model="skillName"
+          :error="validation.hasError('skillName')"
         )
-        .buttons
-            input(
-                type='text',
-                v-model="newSkill",
-                :class="{error : validation.hasError('newSkill')}"
-            )
-            button(
-                @click="addSkill(skillType)",
-                :disabled="validation.hasError('newSkill')"
-            ) Добавить
-            div {{ validation.firstError('newSkill')}}
+      .skill-error {{validation.firstError('skillName')}}
+      app-button(
+        title="Добавить"
+        @click="addSkill(skillGroup)"
+        :disabled="validation.hasError('skillName')"
+      )
 </template>
 <script>
-import { Validator } from "simple-vue-validator";
+
+import { Validator } from 'simple-vue-validator'
+
 export default {
-  mixins: [require("simple-vue-validator").mixin],
-  data: function() {
-    return {
-      newSkill: ""
-    };
-  },
+  mixins: [require('simple-vue-validator').mixin],
   validators: {
-    newSkill(value) {
-      return Validator.value(value).required("Скилл не может быть пустым!");
+    skillName: (value) => {
+      return Validator.value(value).required('Название не может быть пустым')
     }
   },
+  data: () => ({
+    skillName: '',
+    toto: ''
+  }),
   props: {
-    skillType: String,
+    skillGroup: String,
     skills: Array
   },
   methods: {
-    addSkill(skillType) {
+    addSkill(skillGroup) {
       this.$validate().then(success => {
-        if (!success) return; // если валидация не прошла скилл не добавится
-        this.$emit("addSkill", {
-          id: Math.round(Math.random() * 10),
-          name: this.newSkill,
+        if (!success) return
+        this.$emit('addSkill', {
+          id: Math.round(Math.random() * 1000000),
+          name: this.skillName,
           percents: 0,
-          type: this.checkSkillType(skillType)
-        }),
-        this.newSkill = "";
-		this.validation.reset(); // обнуляем валидацию
-      });
+          type: this.checkSkillType(skillGroup)
+        })
+      })
     },
-    checkSkillType(skillType) {
-      switch (skillType) {
-        case "Frontend":
-          return 1;
-        case "Workflow":
-          return 2;
-        case "Backend":
-          return 3;
+    removeSkill(skillId) {
+      this.$emit('removeSkill', skillId)
+    },
+    checkSkillType(skillGroup) {
+      switch (skillGroup) {
+        case 'Frontend':
+          return 1
+        case 'Workflow':
+          return 2
+        case 'Backend':
+          return 3
       }
     }
   },
   components: {
-    skillItem: require("./Skill-item")
+    Skill: require('../skill'),
+    AppInput: require('_common/Input'),
+    AppButton: require('_common/Button')
   }
-};
+}
 </script>
-<style lang='scss' scoped>
-.skills-title {
-  font-weight: 700;
-  margin-bottom: 25px;
-}
-.skills-table {
-  margin-left: 25px;
-  margin-bottom: 30px;
-}
-.error {
-  border: solid 1px red;
-}
-</style>
+<style src="./style.scss" lang="scss" scoped></style>
